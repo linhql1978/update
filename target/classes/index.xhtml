@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta charset="ISO-8859-1" />
+	<title>Insert title here</title>
+	<h:outputStylesheet library="css" name="my_css1.css"></h:outputStylesheet>
+</h:head>
+<h:body>
+	<h:form id="main">
+		<h:panelGroup layout="block" id="students">
+			<h:commandLink value="Add"
+				rendered="#{studentService.student == null}">
+				<f:ajax listener="#{studentService.addStudent()}" render=":main"></f:ajax>
+			</h:commandLink>
+			<h:dataTable value="#{studentService.students}" var="student"
+				rendered="#{studentService.student == null}">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:commandLink value="#{student.id}">
+						<f:ajax listener="#{studentService.toggle(student)}"
+							render=":main:students :main:student_detail"></f:ajax>
+					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Name</f:facet>
+					<h:outputText lang="en" value="#{student.name}"></h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">DateOfBirth</f:facet>
+					<h:outputText lang="en" value="#{student.dateOfBirth}"
+						converter="dateConverter"></h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Email</f:facet>
+					<h:outputText lang="en" value="#{student.email}"></h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">PhoneNumber</f:facet>
+					<h:outputText lang="en" value="#{student.phoneNumber}"></h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">JoinDate</f:facet>
+					<h:outputText lang="en" value="#{student.joinDate}"
+						converter="dateConverter"></h:outputText>
+				</h:column>
+			</h:dataTable>
+		</h:panelGroup>
+		<h:panelGroup layout="block" id="student_detail">
+			<h:panelGroup layout="block"
+				rendered="#{studentService.student != null}">
+				<h:outputLabel value="Id"></h:outputLabel>
+				<h:outputText lang="en" value="#{studentService.student.id}"></h:outputText>
+				<br />
+				<h:outputLabel value="Name"></h:outputLabel>
+				<h:inputText value="#{studentService.student.name}">
+					<f:ajax event="change" listener="#{studentService.updateStudent()}"
+						render=":main:student_detail"></f:ajax>
+				</h:inputText>
+				<br />
+				<h:outputText id="test" value="#{studentService.student.name}" />
+				<br />
+				<h:outputLabel value="DateOfBirth"></h:outputLabel>
+				<h:inputText id="dateOfBirth"
+					value="#{studentService.student.dateOfBirth}">
+					<!-- ###### -->
+					<f:converter converterId="dateConverter" />
+					<f:validator validatorId="dateOfBirthValidator" />
+					<f:ajax event="change" listener="#{studentService.updateStudent()}"
+						render=":main:student_detail"></f:ajax>
+				</h:inputText>
+				<h:message styleClass="message_error" for=":main:dateOfBirth" />
+				<br />
+				<h:outputText value="#{studentService.student.dateOfBirth}"
+					converter="dateConverter" />
+				<br />
+				<h:outputLabel value="Email"></h:outputLabel>
+				<h:inputText id="email" value="#{studentService.student.email}"
+					validatorMessage="Invalid email">
+					<f:validator validatorId="emailValidator" />
+					<f:ajax execute=":main:email" event="change"
+						listener="#{studentService.updateStudent()}"
+						render=":main:student_detail"></f:ajax>
+				</h:inputText>
+				<h:message styleClass="message_error" for=":main:email" />
+				<br />
+				<h:outputText value="#{studentService.student.email}" />
+				<br />
+				<h:outputLabel value="PhoneNumber"></h:outputLabel>
+				<h:inputText id="phoneNumber"
+					value="#{studentService.student.phoneNumber}">
+					<f:validator validatorId="phoneNumberValidator" />
+					<f:ajax event="change" listener="#{studentService.updateStudent()}"
+						render=":main:student_detail"></f:ajax>
+				</h:inputText>
+				<h:message styleClass="message_error" for=":main:phoneNumber" />
+				<br />
+				<h:outputText value="#{studentService.student.phoneNumber}" />
+				<br />
+				<h:outputLabel value="JoinDate"></h:outputLabel>
+				<h:inputText id="joinDate"
+					value="#{studentService.student.joinDate}">
+					<!-- ##### -->
+					<f:converter converterId="dateConverter" />
+					<f:validator validatorId="joinDateValidator" />
+					<f:ajax event="change" listener="#{studentService.updateStudent()}"
+						render=":main:student_detail"></f:ajax>
+				</h:inputText>
+				<h:message styleClass="message_error" for=":main:joinDate" />
+				<br />
+				<h:outputText value="#{studentService.student.joinDate}"
+					converter="dateConverter" />
+				<br />
+
+				<h:commandLink value="Back">
+					<f:ajax listener="#{studentService.toggle()}"
+						render=":main:students :main:student_detail"></f:ajax>
+				</h:commandLink>
+			</h:panelGroup>
+		</h:panelGroup>
+	</h:form>
+</h:body>
+</html>
