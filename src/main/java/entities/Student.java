@@ -2,11 +2,18 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Student implements Serializable {
@@ -68,4 +75,30 @@ public class Student implements Serializable {
 		return id;
 	}
 
+	// ####
+	@ManyToMany(fetch = FetchType.EAGER) // Eager
+	@JoinTable(name = "class_student", joinColumns = @JoinColumn(name = "id_student"), inverseJoinColumns = @JoinColumn(name = "id_class"))
+	private Set<DataClass> dataClasses;
+
+	public Set<DataClass> getDataClasses() {
+		if (dataClasses == null)
+			dataClasses = new HashSet<DataClass>();
+		return dataClasses;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id + name + dateOfBirth + email + phoneNumber + joinDate);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (obj == null || this.getClass() != obj.getClass())
+			return false;
+		Student std = (Student) obj;
+		return this.id == std.id;
+	}
+	// /####
 }

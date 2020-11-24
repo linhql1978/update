@@ -8,117 +8,253 @@
 	<h:outputStylesheet library="css" name="my_css1.css"></h:outputStylesheet>
 </h:head>
 <h:body>
-	<h:form id="main">
-		<h:panelGroup layout="block" id="students">
-			<h:commandLink value="Add"
-				rendered="#{studentService.student == null}">
-				<f:ajax listener="#{studentService.addStudent()}" render=":main"></f:ajax>
+	<h:form id="home_screen">
+		<h:panelGroup layout="block" rendered="#{homeScreen.tab==''}">
+			<h:commandLink value="StudentSerivce">
+				<f:ajax render=":home_screen :student_service"
+					listener="#{homeScreen.tabToStudentService()}"></f:ajax>
 			</h:commandLink>
-			<h:dataTable value="#{studentService.students}" var="student"
-				rendered="#{studentService.student == null}">
-				<h:column>
-					<f:facet name="header">Id</f:facet>
-					<h:commandLink value="#{student.id}">
-						<f:ajax listener="#{studentService.toggle(student)}"
-							render=":main:students :main:student_detail"></f:ajax>
-					</h:commandLink>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Name</f:facet>
-					<h:outputText lang="en" value="#{student.name}"></h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">DateOfBirth</f:facet>
-					<h:outputText lang="en" value="#{student.dateOfBirth}"
-						converter="dateConverter"></h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Email</f:facet>
-					<h:outputText lang="en" value="#{student.email}"></h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">PhoneNumber</f:facet>
-					<h:outputText lang="en" value="#{student.phoneNumber}"></h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">JoinDate</f:facet>
-					<h:outputText lang="en" value="#{student.joinDate}"
-						converter="dateConverter"></h:outputText>
-				</h:column>
-			</h:dataTable>
-		</h:panelGroup>
-		<h:panelGroup layout="block" id="student_detail">
-			<h:panelGroup layout="block"
-				rendered="#{studentService.student != null}">
-				<h:outputLabel value="Id"></h:outputLabel>
-				<h:outputText lang="en" value="#{studentService.student.id}"></h:outputText>
-				<br />
-				<h:outputLabel value="Name"></h:outputLabel>
-				<h:inputText value="#{studentService.student.name}">
-					<f:ajax event="change" listener="#{studentService.updateStudent()}"
-						render=":main:student_detail"></f:ajax>
-				</h:inputText>
-				<br />
-				<h:outputText id="test" value="#{studentService.student.name}" />
-				<br />
-				<h:outputLabel value="DateOfBirth"></h:outputLabel>
-				<h:inputText id="dateOfBirth"
-					value="#{studentService.student.dateOfBirth}">
-					<!-- ###### -->
-					<f:converter converterId="dateConverter" />
-					<f:validator validatorId="dateOfBirthValidator" />
-					<f:ajax event="change" listener="#{studentService.updateStudent()}"
-						render=":main:student_detail"></f:ajax>
-				</h:inputText>
-				<h:message styleClass="message_error" for=":main:dateOfBirth" />
-				<br />
-				<h:outputText value="#{studentService.student.dateOfBirth}"
-					converter="dateConverter" />
-				<br />
-				<h:outputLabel value="Email"></h:outputLabel>
-				<h:inputText id="email" value="#{studentService.student.email}"
-					validatorMessage="Invalid email">
-					<f:validator validatorId="emailValidator" />
-					<f:ajax execute=":main:email" event="change"
-						listener="#{studentService.updateStudent()}"
-						render=":main:student_detail"></f:ajax>
-				</h:inputText>
-				<h:message styleClass="message_error" for=":main:email" />
-				<br />
-				<h:outputText value="#{studentService.student.email}" />
-				<br />
-				<h:outputLabel value="PhoneNumber"></h:outputLabel>
-				<h:inputText id="phoneNumber"
-					value="#{studentService.student.phoneNumber}">
-					<f:validator validatorId="phoneNumberValidator" />
-					<f:ajax event="change" listener="#{studentService.updateStudent()}"
-						render=":main:student_detail"></f:ajax>
-				</h:inputText>
-				<h:message styleClass="message_error" for=":main:phoneNumber" />
-				<br />
-				<h:outputText value="#{studentService.student.phoneNumber}" />
-				<br />
-				<h:outputLabel value="JoinDate"></h:outputLabel>
-				<h:inputText id="joinDate"
-					value="#{studentService.student.joinDate}">
-					<!-- ##### -->
-					<f:converter converterId="dateConverter" />
-					<f:validator validatorId="joinDateValidator" />
-					<f:ajax event="change" listener="#{studentService.updateStudent()}"
-						render=":main:student_detail"></f:ajax>
-				</h:inputText>
-				<h:message styleClass="message_error" for=":main:joinDate" />
-				<br />
-				<h:outputText value="#{studentService.student.joinDate}"
-					converter="dateConverter" />
-				<br />
-
-				<h:commandLink value="Back">
-					<f:ajax listener="#{studentService.toggle()}"
-						render=":main:students :main:student_detail"></f:ajax>
-				</h:commandLink>
-			</h:panelGroup>
+			<br />
+			<h:commandLink value="ClassManagement">
+				<f:ajax render=":home_screen :class_management"
+					listener="#{homeScreen.tabToClassManagement()}"></f:ajax>
+			</h:commandLink>
 		</h:panelGroup>
 	</h:form>
+	<h:form id="student_service">
+		<h:panelGroup layout="block" id="studnet_management_display"
+			rendered="#{homeScreen.tab=='StudentService'}">
+			<h:panelGroup layout="block" id="students">
+				<h:commandLink value="Add"
+					rendered="#{studentService.student == null}">
+					<f:ajax listener="#{studentService.addStudent()}"
+						render=":student_service"></f:ajax>
+				</h:commandLink>
+				<h:dataTable value="#{studentService.students}" var="student"
+					rendered="#{studentService.student == null}">
+					<h:column>
+						<f:facet name="header">Id</f:facet>
+						<h:commandLink value="#{student.id}">
+							<f:ajax listener="#{studentService.toggle(student)}"
+								render=":student_service:students :student_service:student_detail"></f:ajax>
+						</h:commandLink>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Name</f:facet>
+						<h:outputText lang="en" value="#{student.name}"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">DateOfBirth</f:facet>
+						<h:outputText lang="en" value="#{student.dateOfBirth}"
+							converter="dateConverter"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Email</f:facet>
+						<h:outputText lang="en" value="#{student.email}"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">PhoneNumber</f:facet>
+						<h:outputText lang="en" value="#{student.phoneNumber}"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">JoinDate</f:facet>
+						<h:outputText lang="en" value="#{student.joinDate}"
+							converter="dateConverter"></h:outputText>
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
+			<h:panelGroup layout="block" id="student_detail">
+				<h:panelGroup layout="block"
+					rendered="#{studentService.student != null}">
+					<h:outputLabel value="Id"></h:outputLabel>
+					<h:outputText lang="en" value="#{studentService.student.id}"></h:outputText>
+					<br />
+					<h:outputLabel value="Name"></h:outputLabel>
+					<h:inputText value="#{studentService.student.name}">
+						<f:ajax event="change"
+							listener="#{studentService.updateStudent()}"
+							render=":student_service:student_detail"></f:ajax>
+					</h:inputText>
+					<br />
+					<h:outputText id="test" value="#{studentService.student.name}" />
+					<br />
+					<h:outputLabel value="DateOfBirth"></h:outputLabel>
+					<h:inputText id="dateOfBirth"
+						value="#{studentService.student.dateOfBirth}">
+						<f:converter converterId="dateConverter" />
+						<f:validator validatorId="dateOfBirthValidator" />
+						<f:ajax event="change"
+							listener="#{studentService.updateStudent()}"
+							render=":student_service:student_detail"></f:ajax>
+					</h:inputText>
+					<h:message styleClass="message_error"
+						for=":student_service:dateOfBirth" />
+					<br />
+					<h:outputText value="#{studentService.student.dateOfBirth}"
+						converter="dateConverter" />
+					<br />
+					<h:outputLabel value="Email"></h:outputLabel>
+					<h:inputText id="email" value="#{studentService.student.email}"
+						validatorMessage="Invalid email">
+						<f:validator validatorId="emailValidator" />
+						<f:ajax execute=":student_service:email" event="change"
+							listener="#{studentService.updateStudent()}"
+							render=":student_service:student_detail"></f:ajax>
+					</h:inputText>
+					<h:message styleClass="message_error" for=":student_service:email" />
+					<br />
+					<h:outputText value="#{studentService.student.email}" />
+					<br />
+					<h:outputLabel value="PhoneNumber"></h:outputLabel>
+					<h:inputText id="phoneNumber"
+						value="#{studentService.student.phoneNumber}">
+						<f:validator validatorId="phoneNumberValidator" />
+						<f:ajax event="change"
+							listener="#{studentService.updateStudent()}"
+							render=":student_service:student_detail"></f:ajax>
+					</h:inputText>
+					<h:message styleClass="message_error"
+						for=":student_service:phoneNumber" />
+					<br />
+					<h:outputText value="#{studentService.student.phoneNumber}" />
+					<br />
+					<h:outputLabel value="JoinDate"></h:outputLabel>
+					<h:inputText id="joinDate"
+						value="#{studentService.student.joinDate}">
+						<f:converter converterId="dateConverter" />
+						<f:validator validatorId="joinDateValidator" />
+						<f:ajax event="change"
+							listener="#{studentService.updateStudent()}"
+							render=":student_service:student_detail"></f:ajax>
+					</h:inputText>
+					<h:message styleClass="message_error"
+						for=":student_service:joinDate" />
+					<br />
+					<h:outputText value="#{studentService.student.joinDate}"
+						converter="dateConverter" />
+					<br />
+
+					<h:commandLink value="Back">
+						<f:ajax listener="#{studentService.toggle()}"
+							render=":student_service:students :student_service:student_detail"></f:ajax>
+					</h:commandLink>
+				</h:panelGroup>
+			</h:panelGroup>
+			<h:commandLink value="HomeScreen">
+				<f:ajax render=":home_screen :student_service"
+					listener="#{homeScreen.studentServiceEnd()}"></f:ajax>
+			</h:commandLink>
+		</h:panelGroup>
+	</h:form>
+
+	<!--  -->
+	<h:form id="class_management">
+		<h:panelGroup layout="block" id="class_management_display"
+			rendered="#{homeScreen.tab=='ClassManagement'}">
+			<h:panelGroup layout="block" id="classes">
+				<h:commandLink value="Add"
+					rendered="#{classManagement.dataClass == null}">
+					<f:ajax listener="#{classManagement.addDataClass()}"
+						render=":class_management"></f:ajax>
+				</h:commandLink>
+				<h:dataTable value="#{classManagement.dataClasses}" var="dataClass"
+					rendered="#{classManagement.dataClass == null}">
+					<h:column>
+						<f:facet name="header">Id</f:facet>
+						<h:commandLink value="#{dataClass.id}">
+							<f:ajax listener="#{classManagement.toggle(dataClass)}"
+								render=":class_management:classes :class_management:class_detail"></f:ajax>
+						</h:commandLink>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Name</f:facet>
+						<h:outputText lang="en" value="#{dataClass.name}"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Monitor</f:facet>
+						<h:outputText lang="en" value="#{dataClass.monitor}"></h:outputText>
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
+			<h:panelGroup layout="block" id="class_detail">
+				<h:panelGroup layout="block"
+					rendered="#{classManagement.dataClass != null}">
+					<h:outputLabel value="Id"></h:outputLabel>
+					<h:outputText lang="en" value="#{classManagement.dataClass.id}"></h:outputText>
+					<br />
+					<h:outputLabel value="Name"></h:outputLabel>
+					<h:inputText value="#{classManagement.dataClass.name}">
+						<f:ajax event="change"
+							listener="#{classManagement.updateDataClass()}"
+							render=":class_management:class_detail"></f:ajax>
+					</h:inputText>
+					<br />
+					<h:outputText value="#{classManagement.dataClass.name}" />
+					<br />
+
+					<h:outputLabel value="Monitor"></h:outputLabel>
+					<h:inputText value="#{classManagement.dataClass.monitor}">
+						<f:ajax event="change"
+							listener="#{classManagement.updateDataClass()}"
+							render=":class_management:class_detail"></f:ajax>
+					</h:inputText>
+					<br />
+					<h:outputText value="#{classManagement.dataClass.monitor}" />
+					<br />
+					<h:outputText value="ListStudents" />
+					<!-- ############ -->
+					<h:panelGroup layout="block" id="list_students">
+						<h:dataTable value="#{classManagement.dataClass.students}"
+							var="student">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+								<h:outputText lang="en" value="#{student.id}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Name</f:facet>
+								<h:outputText lang="en" value="#{student.name}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">DateOfBirth</f:facet>
+								<h:outputText lang="en" value="#{student.dateOfBirth}"
+									converter="dateConverter"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Email</f:facet>
+								<h:outputText lang="en" value="#{student.email}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">PhoneNumber</f:facet>
+								<h:outputText lang="en" value="#{student.phoneNumber}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">JoinDate</f:facet>
+								<h:outputText lang="en" value="#{student.joinDate}"
+									converter="dateConverter"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Remove</f:facet>
+								<h:commandLink value="Click me to remove">
+									<f:ajax render=":class_management:list_students"
+										listener="#{classManagement.removeStudent(student)}"></f:ajax>
+								</h:commandLink>
+							</h:column>
+						</h:dataTable>
+					</h:panelGroup>
+					<!-- /######## -->
+					<br />
+					<h:commandLink value="Back">
+						<f:ajax listener="#{classManagement.toggle()}"
+							render=":class_management:classes :class_management:class_detail"></f:ajax>
+					</h:commandLink>
+				</h:panelGroup>
+			</h:panelGroup>
+			<h:commandLink value="HomeScreen">
+				<f:ajax render=":home_screen :class_management"
+					listener="#{homeScreen.classManagementEnd()}"></f:ajax>
+			</h:commandLink>
+		</h:panelGroup>
+	</h:form>
+	<!--  -->
 </h:body>
 </html>

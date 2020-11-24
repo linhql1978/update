@@ -1,9 +1,13 @@
 package beans_el;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,17 +17,40 @@ import entities.Student;
 import qualifier.HibernateSession;
 
 @Named
-@ApplicationScoped
-public class StudentService {
+@ConversationScoped
+public class StudentService implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private List<Student> students;
 
 	private Student student;
 
+	// ####
+
+	@Inject
+	private Conversation conversation;
+
+	public void begin() {
+		if (this.conversation.isTransient())
+			this.conversation.begin();
+	}
+
+	public void end() {
+		if (!this.conversation.isTransient())
+			this.conversation.end();
+	}
+
+	// /####
+
 	@Inject
 	@HibernateSession
 	private Session session;
 
+	// ####
 	public List<Student> getStudents() {
 		if (students == null) {
 			students = getListStudents();
@@ -38,6 +65,7 @@ public class StudentService {
 	private List<Student> getListStudents() {
 		return session.createNativeQuery("select * from student", Student.class).list();
 	}
+	// /####
 
 	public Student getStudent() {
 		return student;
@@ -62,5 +90,17 @@ public class StudentService {
 		session.save(student);
 
 		students = null;
+	}
+
+	// ####
+
+	@PostConstruct
+	public void print() {
+		System.out.println("PostConstruct " + this);
+	}
+
+	@PreDestroy
+	public void print1() {
+		System.out.println("PreDestroy " + this);
 	}
 }
