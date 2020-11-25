@@ -4,13 +4,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -43,15 +41,14 @@ public class DataClass {
 		return id;
 	}
 
-	// ####
-	@ManyToMany(mappedBy = "dataClasses", cascade = { CascadeType.ALL }) // Eager
-	private Set<Student> students;
-
-	@PreRemove
-	public void checkStudents() {
-		if (!(this.getStudents().isEmpty()))
-			throw new RuntimeException("Can't remove DataClass by students is not empty");
+	@Override
+	public String toString() {
+		return "id= " + id + ", name= " + name + ", monitor= " + monitor;
 	}
+
+	// ####
+	@ManyToMany(mappedBy = "dataClasses")
+	private Set<Student> students;
 
 	public Set<Student> getStudents() {
 		if (students == null)

@@ -22,7 +22,7 @@
 		</h:panelGroup>
 	</h:form>
 	<h:form id="student_service">
-		<h:panelGroup layout="block" id="studnet_management_display"
+		<h:panelGroup layout="block" id="student_management_display"
 			rendered="#{homeScreen.tab=='StudentService'}">
 			<h:panelGroup layout="block" id="students">
 				<h:commandLink value="Add"
@@ -66,6 +66,7 @@
 			<h:panelGroup layout="block" id="student_detail">
 				<h:panelGroup layout="block"
 					rendered="#{studentService.student != null}">
+					<!-- #### -->
 					<h:outputLabel value="Id"></h:outputLabel>
 					<h:outputText lang="en" value="#{studentService.student.id}"></h:outputText>
 					<br />
@@ -133,7 +134,48 @@
 					<h:outputText value="#{studentService.student.joinDate}"
 						converter="dateConverter" />
 					<br />
-
+					<h:outputText value="ListDataClasses" />
+					<h:panelGroup layout="block" id="list_data_classes">
+						<h:dataTable value="#{studentService.student.dataClasses}"
+							var="dataClass">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+								<h:outputText value="#{dataClass.id}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Name</f:facet>
+								<h:outputText value="#{dataClass.name}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Monitor</f:facet>
+								<h:outputText value="#{dataClass.monitor}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Remove</f:facet>
+								<h:commandLink value="Leave the DataClass">
+									<f:ajax render=":student_service:list_data_classes"
+										listener="#{studentService.leaveDataClass(dataClass)}"></f:ajax>
+								</h:commandLink>
+							</h:column>
+						</h:dataTable>
+					</h:panelGroup>
+					<h:panelGroup layout="block" id="data_classes_to_join">
+						<h:selectOneMenu value="#{studentService.dataClassToJoin}"
+							converter="dataClassConverter" id="data_class_to_join">
+							<f:selectItems
+								value="#{studentService.getDataClassesNotRegistryByStudent()}"
+								var="dataClass" itemValue="#{dataClass}"
+								itemLabel="#{dataClass.toString()}" />
+						</h:selectOneMenu>
+						<br />
+						<h:commandLink value="JoinDataClass">
+							<f:ajax execute=":student_service:data_class_to_join"
+								render=":student_service:list_data_classes :student_service:data_classes_to_join"
+								listener="#{studentService.joinDataClass()}"></f:ajax>
+						</h:commandLink>
+					</h:panelGroup>
+					<!-- /#### -->
+					<br />
 					<h:commandLink value="Back">
 						<f:ajax listener="#{studentService.toggle()}"
 							render=":student_service:students :student_service:student_detail"></f:ajax>
@@ -249,8 +291,7 @@
 						<h:selectOneMenu id="student_to_add"
 							value="#{classManagement.studentToAdd}"
 							converter="studentConveter">
-							<f:selectItems
-								value="#{classManagement.getStudentsOuterDataClass()}"
+							<f:selectItems value="#{classManagement.studentsOuterDataClass}"
 								var="student" itemValue="#{student}"
 								itemLabel="#{student.toString()}" />
 						</h:selectOneMenu>

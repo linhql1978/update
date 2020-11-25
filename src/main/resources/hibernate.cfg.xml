@@ -15,5 +15,9 @@
 
 		<mapping class="entities.Student" />
 		<mapping class="entities.DataClass" />
+		<mapping class="entities.Demo1" />
+		<mapping class="entities.Demo2" />
+		<mapping class="entities.Demo3" />
+		<mapping class="entities.Demo4" />
 	</session-factory>
 </hibernate-configuration>

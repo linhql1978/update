@@ -13,8 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "student")
 public class Student implements Serializable {
 
 	/**
@@ -80,7 +82,7 @@ public class Student implements Serializable {
 	}
 
 	// ####
-	@ManyToMany // Eager
+	@ManyToMany 
 	@JoinTable(name = "class_student", joinColumns = @JoinColumn(name = "id_student"), inverseJoinColumns = @JoinColumn(name = "id_class"))
 	private Set<DataClass> dataClasses;
 

@@ -1,11 +1,10 @@
 package beans_el;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -46,9 +45,9 @@ public class ClassManagement implements Serializable {
 	private Session session;
 
 	// ####
-	private List<DataClass> dataClasses;
+	private Collection<DataClass> dataClasses;
 
-	public List<DataClass> getDataClasses() {
+	public Collection<DataClass> getDataClasses() {
 		if (dataClasses == null) {
 			dataClasses = getListDataClasses();
 		}
@@ -61,8 +60,9 @@ public class ClassManagement implements Serializable {
 		return dataClasses;
 	}
 
-	private List<DataClass> getListDataClasses() {
-		return session.createNativeQuery("select * from class", DataClass.class).list();
+	private Collection<DataClass> getListDataClasses() {
+		return session.createQuery("select dc from DataClass dc left join fetch dc.students", DataClass.class).list()
+				.stream().collect(Collectors.toSet());
 	}
 	// /####
 
@@ -75,7 +75,7 @@ public class ClassManagement implements Serializable {
 
 	public void toggle(DataClass dataClass) {
 		this.dataClass = dataClass;
-
+		setUpStudentsOuterDataClass();
 	}
 
 	public void toggle() {
@@ -98,9 +98,14 @@ public class ClassManagement implements Serializable {
 	// remove student from dataClass
 	public void removeStudent(Student student) {
 		if (dataClass != null && student != null) {
+			student = session // just only owner remove is ok
+					.createQuery("select s from Student s left join fetch s.dataClasses where s.id=" + student.getId(),
+							Student.class)
+					.list().get(0);
 			dataClass.getStudents().remove(student);
+			studentsOuterDataClass.add(student);
 			student.getDataClasses().remove(dataClass);
-			session.merge(dataClass);
+			session.update(student);
 		}
 	}
 	// /####
@@ -116,34 +121,49 @@ public class ClassManagement implements Serializable {
 		this.studentToAdd = studentToAdd;
 	}
 
+	// ###
+	private Collection<Student> studentsOuterDataClass;
+
+	public void setUpStudentsOuterDataClass() {
+		Collection<Student> listStudent = session
+				.createQuery("select s from Student s left join fetch s.dataClasses", Student.class).list().stream()
+				.collect(Collectors.toSet());
+		studentsOuterDataClass = listStudent.stream().filter(s -> !dataClass.getStudents().contains(s))
+				.collect(Collectors.toList());
+	}
+
 	// get students which not relation with dataClass
-	public List<Student> getStudentsOuterDataClass() {
-		List<Student> listStudent = session.createNativeQuery("select * from student", Student.class).list();
-		return listStudent.stream().filter(s -> !dataClass.getStudents().contains(s)).sorted((s1, s2) -> {
+	public Collection<Student> getStudentsOuterDataClass() { // <f:selectItems call to four times ???
+		if (studentsOuterDataClass == null)
+			studentsOuterDataClass = new HashSet<Student>();
+		return studentsOuterDataClass.stream().filter(s -> !dataClass.getStudents().contains(s)).sorted((s1, s2) -> {
 			if (s1.getId() > s2.getId())
 				return 1;
 			return -1;
 		}).collect(Collectors.toList());
 	}
+	// /###
 
 	public void addStudentToDataClass() {
 		if (dataClass != null && studentToAdd != null) {
 			dataClass.getStudents().add(studentToAdd);
+			studentsOuterDataClass.remove(studentToAdd);
+			session.detach(studentToAdd);
 			studentToAdd.getDataClasses().add(dataClass);
-			session.merge(dataClass);
+			session.update(studentToAdd);
 		}
 	}
 	// /####
 
 	// ####
-	@PostConstruct
-	public void print() {
-		System.out.println("PostConstruct " + this);
-	}
-
-	@PreDestroy
-	public void print1() {
-		System.out.println("PreDestroy " + this);
-	}
+//	@PostConstruct
+//	public void print() {
+//		System.out.println("PostConstruct " + this);
+//	}
+//
+//	@PreDestroy
+//	public void print1() {
+//		System.out.println("PreDestroy " + this);
+//	}
 	// /####
 }

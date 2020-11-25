@@ -2,8 +2,6 @@ package beans_el;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -54,7 +52,6 @@ public class HomeScreen implements Serializable {
 	}
 
 	public void tabToStudentService() {
-		System.out.println("TabToStudentService");
 		tab = "StudentService";
 		this.begin();
 		studentService.begin();
@@ -62,7 +59,6 @@ public class HomeScreen implements Serializable {
 	}
 
 	public void studentServiceEnd() {
-		System.out.println("StudentServiceEnd");
 		tab = "";
 		studentService.end();
 		this.end();
@@ -70,14 +66,12 @@ public class HomeScreen implements Serializable {
 	}
 
 	public void tabToClassManagement() {
-		System.out.println("TabToClassManagement");
 		tab = "ClassManagement";
 		this.begin();
 		classManagement.begin();
 	}
 
 	public void classManagementEnd() {
-		System.out.println("ClassManagementEnd");
 		tab = "";
 		studentService.end();
 		this.end();
@@ -85,14 +79,14 @@ public class HomeScreen implements Serializable {
 	// /####
 
 	// ####
-	@PostConstruct
-	public void print() {
-		System.out.println("PostConstruct " + this);
-	}
-
-	@PreDestroy
-	public void print1() {
-		System.out.println("PreDestroy " + this);
-	}
+//	@PostConstruct
+//	public void print() {
+//		System.out.println("PostConstruct " + this);
+//	}
+//
+//	@PreDestroy
+//	public void print1() {
+//		System.out.println("PreDestroy " + this);
+//	}
 	// /####
 }
