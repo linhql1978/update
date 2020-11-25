@@ -201,8 +201,8 @@
 					<br />
 					<h:outputText value="#{classManagement.dataClass.monitor}" />
 					<br />
+					<!-- #### -->
 					<h:outputText value="ListStudents" />
-					<!-- ############ -->
 					<h:panelGroup layout="block" id="list_students">
 						<h:dataTable value="#{classManagement.dataClass.students}"
 							var="student">
@@ -235,13 +235,34 @@
 							<h:column>
 								<f:facet name="header">Remove</f:facet>
 								<h:commandLink value="Click me to remove">
-									<f:ajax render=":class_management:list_students"
+									<f:ajax
+										render=":class_management:list_students :class_management:add_students"
 										listener="#{classManagement.removeStudent(student)}"></f:ajax>
 								</h:commandLink>
 							</h:column>
 						</h:dataTable>
 					</h:panelGroup>
-					<!-- /######## -->
+					<!-- /#### -->
+					<!-- #### -->
+					<h:outputText value="ListStudentsToAdd"></h:outputText>
+					<h:panelGroup layout="block" id="add_students">
+						<h:selectOneMenu id="student_to_add"
+							value="#{classManagement.studentToAdd}"
+							converter="studentConveter">
+							<f:selectItems
+								value="#{classManagement.getStudentsOuterDataClass()}"
+								var="student" itemValue="#{student}"
+								itemLabel="#{student.toString()}" />
+						</h:selectOneMenu>
+						<br />
+						<h:commandLink value="AddStudent">
+							<f:ajax
+								render=":class_management:list_students :class_management:add_students"
+								execute=":class_management:student_to_add"
+								listener="#{classManagement.addStudentToDataClass()}"></f:ajax>
+						</h:commandLink>
+					</h:panelGroup>
+					<!-- /#### -->
 					<br />
 					<h:commandLink value="Back">
 						<f:ajax listener="#{classManagement.toggle()}"

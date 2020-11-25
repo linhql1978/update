@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -75,8 +74,13 @@ public class Student implements Serializable {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "id= " + id + ", name= " + name;
+	}
+
 	// ####
-	@ManyToMany(fetch = FetchType.EAGER) // Eager
+	@ManyToMany // Eager
 	@JoinTable(name = "class_student", joinColumns = @JoinColumn(name = "id_student"), inverseJoinColumns = @JoinColumn(name = "id_class"))
 	private Set<DataClass> dataClasses;
 

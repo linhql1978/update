@@ -1,5 +1,10 @@
 package utiltis;
 
+import org.hibernate.Session;
+
+import entities.DataClass;
+import entities.Student;
+
 public class Test {
 	public static void main(String[] args) {
 		// ####
@@ -31,20 +36,29 @@ public class Test {
 		// /####
 
 		// ####
-//		Student student = new Student();
-//		DataClass dataClass = new DataClass();
-//		student.getDataClasses().add(dataClass);
-//		dataClass.getStudents().add(student);
-////		dataClass.getStudents().add(new Student());
-////		dataClass.getStudents().add(new Student());
-//		Session session = HibernateUtils.getSessionFactory().openSession();
-//		session.beginTransaction();
-////		session.save(student);
-////		session.save(dataClass);
-//		session.persist(dataClass);
-////		session.remove(dataClass);
-//		session.getTransaction().commit();
-//		session.close();
+		Student student = new Student();
+		DataClass dataClass = new DataClass();
+		student.getDataClasses().add(dataClass);
+		dataClass.getStudents().add(student);
+//		dataClass.getStudents().add(new Student());
+//		dataClass.getStudents().add(new Student());
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		session.beginTransaction();
+//		session.save(student);
+//		session.save(dataClass);
+		session.saveOrUpdate(dataClass);
+//		session.remove(dataClass);
+		session.getTransaction().commit();
+		session.close();
+		session = HibernateUtils.getSessionFactory().openSession();
+		session.refresh(student);
+		DataClass dataClass2 = new DataClass();
+		dataClass2.getStudents().add(student);
+		student.getDataClasses().add(dataClass2);
+		session.beginTransaction();
+		session.saveOrUpdate(dataClass2);
+		session.getTransaction().commit();
+		session.close();
 		// ###
 //		Session session = HibernateUtils.getSessionFactory().openSession();
 ////		DataClass dataClass = session.find(DataClass.class, (long) 22);
