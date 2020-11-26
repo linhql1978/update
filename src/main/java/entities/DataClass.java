@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,7 +48,7 @@ public class DataClass {
 	}
 
 	// ####
-	@ManyToMany(mappedBy = "dataClasses")
+	@ManyToMany(mappedBy = "dataClasses", cascade = CascadeType.PERSIST)
 	private Set<Student> students;
 
 	public Set<Student> getStudents() {

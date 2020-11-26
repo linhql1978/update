@@ -2,8 +2,8 @@ package utiltis;
 
 import org.hibernate.Session;
 
-import entities.Demo3;
-import entities.Demo4;
+import entities.DataClass;
+import entities.Student;
 
 public class Test {
 	public static void main(String[] args) {
@@ -36,10 +36,13 @@ public class Test {
 		// /####
 
 		// ####
-//		Student student = new Student(); //owner side
+//		Student student = new Student(); // owner side
+////		Student student1 = new Student(); // owner side
 //		DataClass dataClass = new DataClass();
-////		student.getDataClasses().add(dataClass);
+//		student.getDataClasses().add(dataClass);
+////		student1.getDataClasses().add(dataClass);
 //		dataClass.getStudents().add(student);
+////		dataClass.getStudents().add(student1);
 ////		dataClass.getStudents().add(new Student());
 ////		dataClass.getStudents().add(new Student());
 //		Session session = HibernateUtils.getSessionFactory().openSession();
@@ -47,19 +50,37 @@ public class Test {
 ////		session.save(student);
 ////		session.save(dataClass);
 //		session.saveOrUpdate(dataClass);
+////		session.refresh(dataClass);
+////		session.refresh(student);
 ////		session.saveOrUpdate(student);
 ////		session.remove(dataClass);
 //		session.getTransaction().commit();
 //		session.close();
-////		session = HibernateUtils.getSessionFactory().openSession();
-////		session.refresh(student);
-////		DataClass dataClass2 = new DataClass();
-////		dataClass2.getStudents().add(student);
-////		student.getDataClasses().add(dataClass2);
-////		session.beginTransaction();
-////		session.saveOrUpdate(dataClass2);
-////		session.getTransaction().commit();
-////		session.close();
+		// ###
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		session.beginTransaction();
+		DataClass dataClass = session
+				.createQuery("select dc from DataClass dc left join fetch dc.students where dc.id=71", DataClass.class)
+				.list().get(0);
+		Student student = session
+				.createQuery("select s from Student s left join fetch s.dataClasses where s.id=77", Student.class)
+				.list().get(0);
+		dataClass.getStudents().remove(student);
+//		student.getDataClasses().remove(dataClass);
+		session.remove(dataClass);
+//		session.update(student);
+		session.getTransaction().commit();
+		session.close();
+		// ###
+//		session = HibernateUtils.getSessionFactory().openSession();
+//		session.refresh(student);
+//		DataClass dataClass2 = new DataClass();
+//		dataClass2.getStudents().add(student);
+//		student.getDataClasses().add(dataClass2);
+//		session.beginTransaction();
+//		session.saveOrUpdate(dataClass2);
+//		session.getTransaction().commit();
+//		session.close();
 		// ###
 //		Session session = HibernateUtils.getSessionFactory().openSession();
 ////		DataClass dataClass = session.find(DataClass.class, (long) 22);
@@ -128,13 +149,13 @@ public class Test {
 		// /####
 
 		// ####
-		Session session = HibernateUtils.getSessionFactory().openSession();
-		session.beginTransaction();
-		Demo3 demo3 = session.find(Demo3.class, (long) 1);
-		System.out.println(demo3.getDemo4().getId());
-
-		Demo4 demo4 = session.find(Demo4.class, (long) 1);
-		System.out.println(demo4.getDemo3().getId());
+//		Session session = HibernateUtils.getSessionFactory().openSession();
+//		session.beginTransaction();
+//		Demo3 demo3 = session.find(Demo3.class, (long) 1);
+//		System.out.println(demo3.getDemo4().getId());
+//
+//		Demo4 demo4 = session.find(Demo4.class, (long) 1);
+//		System.out.println(demo4.getDemo3().getId());
 
 		// /####
 	}

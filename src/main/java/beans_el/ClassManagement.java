@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -84,15 +86,20 @@ public class ClassManagement implements Serializable {
 
 	public void updateDataClass() {
 		session.update(dataClass);
-
-		dataClasses = null;
 	}
 
 	public void addDataClass() {
 		dataClass = new DataClass();
 		session.save(dataClass);
 
-		dataClasses = null;
+		dataClasses.add(dataClass);
+	}
+
+	public void removeDataClass(DataClass dataClass) {
+		if (dataClasses != null && dataClass != null && dataClasses.contains(dataClass)) {
+			session.remove(dataClass);
+			dataClasses.remove(dataClass);
+		}
 	}
 
 	// remove student from dataClass
@@ -156,14 +163,14 @@ public class ClassManagement implements Serializable {
 	// /####
 
 	// ####
-//	@PostConstruct
-//	public void print() {
-//		System.out.println("PostConstruct " + this);
-//	}
-//
-//	@PreDestroy
-//	public void print1() {
-//		System.out.println("PreDestroy " + this);
-//	}
+	@PostConstruct
+	public void print() {
+		System.out.println("PostConstruct " + this);
+	}
+
+	@PreDestroy
+	public void print1() {
+		System.out.println("PreDestroy " + this);
+	}
 	// /####
 }

@@ -61,6 +61,14 @@
 						<h:outputText lang="en" value="#{student.joinDate}"
 							converter="dateConverter"></h:outputText>
 					</h:column>
+					<h:column>
+						<f:facet name="header">Remove</f:facet>
+						<h:commandLink value="Click to remove"
+							rendered="#{student.getDataClasses().isEmpty()}">
+							<f:ajax render=":student_service:students"
+								listener="#{studentService.removeStudent(student)}"></f:ajax>
+						</h:commandLink>
+					</h:column>
 				</h:dataTable>
 			</h:panelGroup>
 			<h:panelGroup layout="block" id="student_detail">
@@ -153,11 +161,17 @@
 							<h:column>
 								<f:facet name="header">Remove</f:facet>
 								<h:commandLink value="Leave the DataClass">
-									<f:ajax render=":student_service:list_data_classes"
+									<f:ajax
+										render=":student_service:list_data_classes :student_service:data_classes_to_join"
 										listener="#{studentService.leaveDataClass(dataClass)}"></f:ajax>
 								</h:commandLink>
 							</h:column>
 						</h:dataTable>
+						<h:commandLink value="Leave all DataClasses">
+							<f:ajax
+								render=":student_service:list_data_classes :student_service:data_classes_to_join"
+								listener="#{studentService.leaveAllDataClasses()}"></f:ajax>
+						</h:commandLink>
 					</h:panelGroup>
 					<h:panelGroup layout="block" id="data_classes_to_join">
 						<h:selectOneMenu value="#{studentService.dataClassToJoin}"
@@ -215,6 +229,14 @@
 					<h:column>
 						<f:facet name="header">Monitor</f:facet>
 						<h:outputText lang="en" value="#{dataClass.monitor}"></h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Remove</f:facet>
+						<h:commandLink value="Click to remove DataClass"
+							rendered="#{dataClass.getStudents().isEmpty()}">
+							<f:ajax render=":class_management:classes"
+								listener="#{classManagement.removeDataClass(dataClass)}"></f:ajax>
+						</h:commandLink>
 					</h:column>
 				</h:dataTable>
 			</h:panelGroup>
