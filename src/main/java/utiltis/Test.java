@@ -57,20 +57,20 @@ public class Test {
 //		session.getTransaction().commit();
 //		session.close();
 		// ###
-		Session session = HibernateUtils.getSessionFactory().openSession();
-		session.beginTransaction();
-		DataClass dataClass = session
-				.createQuery("select dc from DataClass dc left join fetch dc.students where dc.id=71", DataClass.class)
-				.list().get(0);
-		Student student = session
-				.createQuery("select s from Student s left join fetch s.dataClasses where s.id=77", Student.class)
-				.list().get(0);
-		dataClass.getStudents().remove(student);
-//		student.getDataClasses().remove(dataClass);
-		session.remove(dataClass);
-//		session.update(student);
-		session.getTransaction().commit();
-		session.close();
+//		Session session = HibernateUtils.getSessionFactory().openSession();
+//		session.beginTransaction();
+//		DataClass dataClass = session
+//				.createQuery("select dc from DataClass dc left join fetch dc.students where dc.id=71", DataClass.class)
+//				.list().get(0);
+//		Student student = session
+//				.createQuery("select s from Student s left join fetch s.dataClasses where s.id=77", Student.class)
+//				.list().get(0);
+//		dataClass.getStudents().remove(student);
+////		student.getDataClasses().remove(dataClass);
+//		session.remove(dataClass);
+////		session.update(student);
+//		session.getTransaction().commit();
+//		session.close();
 		// ###
 //		session = HibernateUtils.getSessionFactory().openSession();
 //		session.refresh(student);
@@ -82,14 +82,20 @@ public class Test {
 //		session.getTransaction().commit();
 //		session.close();
 		// ###
-//		Session session = HibernateUtils.getSessionFactory().openSession();
-////		DataClass dataClass = session.find(DataClass.class, (long) 22);
-//		Student student = session.find(Student.class, (long) 36);
-//		session.beginTransaction();
-////		session.remove(dataClass);
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		session.beginTransaction();
+//		DataClass dataClass = session.find(DataClass.class, (long) 22);
+		Student student = session.find(Student.class, (long) 67);
+//		session.remove(dataClass);
 //		session.remove(student);
-//		session.getTransaction().commit();
-//		session.close();
+		session.detach(student);
+		student.setName("xyzt121");
+		session.update(student);
+		student.setName("");
+//		student = (Student) session.merge(student);
+//		student.setName("xyzt--");
+		session.getTransaction().commit();
+		session.close();
 		// ###
 //		Session session = HibernateUtils.getSessionFactory().openSession();
 //		session.beginTransaction();

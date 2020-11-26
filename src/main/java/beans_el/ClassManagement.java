@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,19 +26,19 @@ public class ClassManagement implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// ####
-	@Inject
-	private Conversation conversation;
-
-	public void begin() {
-		if (this.conversation.isTransient())
-			this.conversation.begin();
-	}
-
-	public void end() {
-		if (!this.conversation.isTransient())
-			this.conversation.end();
-	}
+	// #### ???
+//	@Inject
+//	private Conversation conversation;
+//
+//	public void begin() {
+//		if (this.conversation.isTransient())
+//			this.conversation.begin();
+//	}
+//
+//	public void end() {
+//		if (!this.conversation.isTransient())
+//			this.conversation.end();
+//	}
 	// /####
 
 	@Inject
